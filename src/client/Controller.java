@@ -54,6 +54,7 @@ public class Controller implements Initializable {
 
     private boolean authenticated;
     private String nickname;
+    private boolean isTimeOut;
 
     private void setAuthenticated(boolean authenticated) {
         this.authenticated = authenticated;
@@ -70,7 +71,12 @@ public class Controller implements Initializable {
         } else {
             setTitle(String.format("[ %s ] - Балабол", nickname));
         }
-        textArea.clear();
+
+        if (!isTimeOut) {
+            textArea.clear();
+        } else {
+            isTimeOut = false;
+        }
     }
 
     @Override
@@ -114,11 +120,15 @@ public class Controller implements Initializable {
                         if (str.startsWith("/regok")) {
                             regController.addMessageTextArea("Регистрация прошла успешно");
                         }
-                        if (str.startsWith("/regno")){
+                        if (str.startsWith("/regno")) {
                             regController.addMessageTextArea("Зарегистрироватся не удалось\n" +
                                     " возможно такой логин или никнейм уже заняты");
                         }
-
+                        if (str.startsWith("/timeout")) {
+                            textArea.appendText("Время истекло. Клиент отключен\n");
+                            isTimeOut = true;
+                            return;
+                        }
                         textArea.appendText(str + "\n");
                     }
 
